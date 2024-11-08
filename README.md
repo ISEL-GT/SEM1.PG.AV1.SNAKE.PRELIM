@@ -9,7 +9,7 @@
 > O trabalho consiste em desenvolver um programa em Kotlin que usa a biblioteca CanvasLib para fazer uma
 versão preliminar do tradicional jogo Snake. Nesta versão, a cobra ainda não come maçãs e por isso não aumenta o seu comprimento. A cobra é apenas
 constituída por duas partes (cabeça e cauda) e atravessa os limites da área de jogo passando para o lado
-oposto. Um obstáculo é colocado na arena em sítios aleatórios.
+oposto.
 ###### You can find the project brief for this assignment in the [briefing](docs/assignment.pdf) file.
 
 
