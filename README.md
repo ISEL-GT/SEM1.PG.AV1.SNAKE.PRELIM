@@ -3,7 +3,7 @@
 </p>
 
 
-## SNAKE (Preliminary Version 1)
+## SNAKE
 
 ### Summary
 > O trabalho consiste em desenvolver um programa em Kotlin que usa a biblioteca CanvasLib para fazer uma
