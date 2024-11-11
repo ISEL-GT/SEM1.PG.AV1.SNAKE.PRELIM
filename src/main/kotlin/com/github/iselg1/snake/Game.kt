@@ -23,6 +23,7 @@ fun Game.generateNewBrick() : Game {
 
     // Returns the new brick set made from this new brick position
     val newBrickSet = this.bricks.plus(brickPosition)
+    println("Generated new brick at $brickPosition")
     return Game(this.snake, newBrickSet)
 }
 

@@ -1,5 +1,4 @@
 package com.github.iselg1.snake
-import kotlin.jvm.internal.Ref.BooleanRef
 import kotlin.random.Random
 
 data class Position(val x: Int, val y: Int)
@@ -8,6 +7,8 @@ data class Position(val x: Int, val y: Int)
 /**
  * Checks if the positional values between this and another position are the same
  * @param position Any other position to compare this one to
+ *
+ * @return Whether the X and Y values for both positions are the same
  */
 fun Position.isEqual(position: Position) : Boolean {
     return this.x == position.x && this.y == position.y
