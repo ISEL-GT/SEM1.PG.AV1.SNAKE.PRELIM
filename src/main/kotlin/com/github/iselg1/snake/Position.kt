@@ -1,8 +1,74 @@
 package com.github.iselg1.snake
+
 import kotlin.random.Random
 
+/**
+ * This class is responsible for holding x and y positions to be used throughout the program
+ * @param x Abscissa for position in grid
+ * @param y Ordinate for position in grid
+ */
 data class Position(val x: Int, val y: Int)
 
+/**
+ * This class is responsible for holding the direction vectors to be used by the snake
+ * @param x Abscissa of the vector direction
+ * @param y Ordinate of the vector direction
+ */
+enum class Direction(val x: Int, val y: Int) {
+    UP(0, -1),
+    DOWN(0, 1),
+    LEFT(-1, 0),
+    RIGHT(1, 0),
+}
+
+/**
+ * Since there's symmetrical relationship between values in opposite directions, if we
+ * multiply them by -1 and land on the other, then they're opposites.
+ *
+ * @param direction Vector with coordinates (x,y)
+ * @return Whether the two directions being compared are opposites or not
+ */
+fun Direction.isOpposite(direction: Direction): Boolean {
+
+    val oppositeX = (symmetric(this.x) == direction.x) && this.x != 0
+    val oppositeY = (symmetric(this.y) == direction.y) && this.y != 0
+    return oppositeX || oppositeY
+}
+
+/**
+ * Checks for the first entry in the directions that has symmetrical values to the one being checked,
+ * meaning it is its opposite.
+ * @return Returns the opposite direction to this one
+ */
+fun Direction.getOpposite(): Direction {
+    return Direction.entries.first { entry -> (entry.x == symmetric(this.x)) && (entry.y == symmetric(this.y)) }
+}
+
+/**
+ * Maps the relevant key codes into directions to be used
+ */
+enum class DirectionMappings(val direction: Direction, val keys: Array<Int>) {
+    LEFT_MAP(Direction.LEFT, keys = arrayOf(37, 65)),
+    UP_MAP(Direction.UP, keys = arrayOf(38, 87)),
+    RIGHT_MAP(Direction.RIGHT, keys = arrayOf(39, 68)),
+    DOWN_MAP(Direction.DOWN, keys = arrayOf(40, 83)),
+}
+
+/**
+ * Gets the direction associated with the given key
+ *
+ * @param keyCode The key code to check for
+ * @return The direction associated with the key code
+ */
+fun getDirectionFor(keyCode: Int): Direction? {
+
+    // Iterate over every mapping and check if our key is within it
+    for (mapping in DirectionMappings.entries) {
+        if (mapping.keys.contains(keyCode)) return mapping.direction
+    }
+
+    return null
+}
 
 /**
  * Checks if the positional values between this and another position are the same
@@ -10,7 +76,7 @@ data class Position(val x: Int, val y: Int)
  *
  * @return Whether the X and Y values for both positions are the same
  */
-fun Position.isEqual(position: Position) : Boolean {
+fun Position.isEqual(position: Position): Boolean {
     return this.x == position.x && this.y == position.y
 }
 
@@ -18,12 +84,56 @@ fun Position.isEqual(position: Position) : Boolean {
  * Checks if this position exists anywhere inside the given list
  * @param positions A list of positions to check the for the existence of this one
  */
-fun Position.exists(positions: List<Position>) : Boolean{
+fun Position.exists(positions: List<Position>): Boolean {
 
     for (position in positions)
         if (position.isEqual(this)) return true;
 
     return false;
+}
+
+/**
+ * Calculates a position based on the vector of the given direction, and loops around
+ * the boundaries of the canvas
+ * @param direction Vector used to calculate the new position
+ * @param factor A constant to multiply the weight of the vector
+ * @return A new position with the vector applied
+ */
+fun Position.applyDirection(direction: Direction, factor: Double = 1.0): Position {
+
+    val width = (BOARD_WIDTH - 2) * SQUARE_DIMENSIONS
+    val height = (BOARD_HEIGHT - 2) * SQUARE_DIMENSIONS
+
+    var x = 0;
+    var y = 0;
+
+    when {
+        this.x > width -> x = 0  // The snake goes over the right side limit
+        this.x < 0 -> x = width // The snake exceeds the left side limit
+
+        this.y > height -> y = 0  // The snake goes over the bottom limit
+        this.y < 0 -> y = height // The snake goes over the upper limit
+    }
+
+    // If none of the above match, these will, where everything is  ok :)
+    if (this.y in 0..height) y = this.y + (direction.y * SQUARE_DIMENSIONS * factor).toInt()
+    if (this.x in 0..width) x = this.x + (direction.x * SQUARE_DIMENSIONS * factor).toInt()
+
+    return Position(x, y);
+}
+
+/**
+ * Forces the application of a direction without the boundary checks
+ * @param direction Vector used to calculate the new position
+ * @param factor A constant to multiply the weight of the vector
+ * @return A new position with the vector applied
+ */
+fun Position.forceApplyDirection(direction: Direction, factor: Double = 1.0): Position {
+
+    val x = this.x + (direction.x * SQUARE_DIMENSIONS * factor).toInt()
+    val y = this.y + (direction.y * SQUARE_DIMENSIONS * factor).toInt()
+
+    return Position(x, y)
 }
 
 /**
@@ -33,11 +143,15 @@ fun Position.exists(positions: List<Position>) : Boolean{
  */
 fun randomPosition(): Position {
 
-    // generate x in [0..Constant_BOARD_WIDTH]
     val x = Random.nextInt(0, BOARD_WIDTH)
-
-    // generate y in [0..Constant_BOARD_HEIGHT]
     val y = Random.nextInt(0, BOARD_HEIGHT)
 
-    return Position(x* SQUARE_DIMENSIONS, y* SQUARE_DIMENSIONS)
+    return Position(x * SQUARE_DIMENSIONS, y * SQUARE_DIMENSIONS)
+}
+
+/**
+ * Returns the symmetrical number to the one provided
+ */
+fun symmetric(x: Int): Int {
+    return x * -1
 }
