@@ -98,7 +98,7 @@ fun onSnakeTick() {
 
     // Get the queued input, or maintain the current direction if there's none
     val directionInput = inputQueue.removeFirstOrNull() ?: game.direction
-    val nextHeadPosition = game.snakeParts.first().position.applyDirection(directionInput);
+    val nextHeadPosition = game.snakeParts.first().position.applyDirection(directionInput)
 
     // If the snake is about to "snap its neck" with a bad move, ignore the last input.
     val correctedInput = if (nextHeadPosition.exists(game.bricks)) game.snakeParts.first().direction else directionInput

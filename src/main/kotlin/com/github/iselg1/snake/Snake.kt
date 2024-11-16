@@ -55,10 +55,9 @@ data class Snake(val type: SnakeType, val position: Position, val direction: Dir
  * Puts together the name of the sprite based on the snake information and
  * returns the SnakeSprite enum based on that information.
  *
- * @param game The current game object being used
  * @return A SnakeSprite object based on the current snake information
  * @see com.github.iselg1.snake.SnakeSprite
  */
-fun Snake.getSprite(game: Game): SnakeSprite {
-    return SnakeSprite.valueOf(this.type.name + "_" + this.direction.name);
+fun Snake.getSprite(): SnakeSprite {
+    return SnakeSprite.valueOf(this.type.name + "_" + this.direction.name)
 }

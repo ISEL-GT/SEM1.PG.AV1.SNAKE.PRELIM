@@ -87,9 +87,9 @@ fun Position.isEqual(position: Position): Boolean {
 fun Position.exists(positions: List<Position>): Boolean {
 
     for (position in positions)
-        if (position.isEqual(this)) return true;
+        if (position.isEqual(this)) return true
 
-    return false;
+    return false
 }
 
 /**
@@ -104,8 +104,8 @@ fun Position.applyDirection(direction: Direction, factor: Double = 1.0): Positio
     val width = (BOARD_WIDTH - 2) * SQUARE_DIMENSIONS
     val height = (BOARD_HEIGHT - 2) * SQUARE_DIMENSIONS
 
-    var x = 0;
-    var y = 0;
+    var x = 0
+    var y = 0
 
     when {
         this.x > width -> x = 0  // The snake goes over the right side limit
@@ -119,7 +119,7 @@ fun Position.applyDirection(direction: Direction, factor: Double = 1.0): Positio
     if (this.y in 0..height) y = this.y + (direction.y * SQUARE_DIMENSIONS * factor).toInt()
     if (this.x in 0..width) x = this.x + (direction.x * SQUARE_DIMENSIONS * factor).toInt()
 
-    return Position(x, y);
+    return Position(x, y)
 }
 
 /**
