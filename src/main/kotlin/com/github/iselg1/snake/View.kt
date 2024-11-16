@@ -3,14 +3,13 @@ package com.github.iselg1.snake
 import pt.isel.canvas.Canvas
 
 // The filename constants for the resources (We can't have configuration files yet)
+const val BRICK_SPRITE = "bricks"
 const val SNAKE_SPRITE = "snake"
 const val SNAKE_SIZE = 64
 
-const val BRICK_SPRITE = "bricks"
-
 /**
  * Draws every brick in the game inside the arena
- * @param arena
+ * @param arena The canvas to draw the game on
  */
 fun Game.drawBricks(arena: Canvas) {
 

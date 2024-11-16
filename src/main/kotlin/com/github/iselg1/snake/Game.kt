@@ -11,7 +11,7 @@ data class Game(val snakeParts: ArrayList<Snake>, val bricks: ArrayList<Position
 /**
  * Generates a new brick with a random position
  *
- * @return Bricks coordinates (x,y) given by randomPosition
+ * @return A position object with the new brick coordinates
  */
 fun Game.generateNewBrick(): Game {
 
@@ -30,9 +30,42 @@ fun Game.generateNewBrick(): Game {
 
 /**
  * Updates the internal list of Snake parts
- * @param snakeParts A list of Snake objects
+ *
+ * @param snakeParts A list of Snake objects to update the snakes list with
  */
-fun Game.updateSnake(snakeParts: ArrayList<Snake>) {
-    game.snakeParts.clear()
+fun Game.updateSnake(snakeParts: List<Snake>) {
+    this.snakeParts.clear()
     snakeParts.forEach { part -> game.snakeParts.add(part) }
+}
+
+/**
+ * Calculates the positions for every snake part based on the given direction. The movement
+ * will be relative to the head of the snake.
+ *
+ * @param direction The direction to move the head of the snake in
+ * @param headPosition The position where the head should be next in
+ * @return A list of snake parts containing the snake objects with their new positions
+ */
+fun Game.calculateSnakeMovement(direction: Direction, headPosition: Position) : List<Snake> {
+
+    // Creates a base array to return and adds the head at the next position
+    val snakes = ArrayList<Snake>()
+    snakes.add(Snake(SnakeType.HEAD, headPosition, direction))
+
+    // Iterates through all the snake's parts, applying the direction of the previous part.
+    // Ignores the tail, because that's handled differently
+    for ((index, snake) in this.snakeParts.dropLast(1).withIndex()) {
+
+        // Skip the head, that's handled differently, but we need it in the list to get its direction
+        if (snake == this.snakeParts.first()) continue;
+        val lastDirection = this.snakeParts[index-1].direction;
+
+        snakes.add(Snake(snake.type, snake.position.applyDirection(lastDirection), lastDirection))
+    }
+
+    // Handles the tail by attaching it to the end of the snake, trailing by one unit.
+    val tailPosition = snakes.last().position.forceApplyDirection(direction.getOpposite())
+    snakes.add(Snake(SnakeType.TAIL, tailPosition, snakes.last().direction))
+
+    return snakes;
 }

@@ -21,6 +21,10 @@ const val SQUARE_DIMENSIONS = 32
 val arena = Canvas(BOARD_WIDTH * SQUARE_DIMENSIONS, BOARD_HEIGHT * SQUARE_DIMENSIONS, BLACK)
 var game = Game(ArrayList(), ArrayList(), Direction.RIGHT)
 
+// Acts as a queue for inputs, in case the user sends multiple too quickly
+const val MAX_INPUTS = 1
+val inputQueue = ArrayDeque<Direction>()
+
 /**
  * Main entrypoint for the program, kick off the main logic flow and spawn the snake
  */
@@ -61,13 +65,15 @@ fun spawnSnake() {
  */
 fun onKeyPressed(key: KeyEvent) {
 
+    if (inputQueue.size > MAX_INPUTS) return
+
     // Get the direction associated with the key pressed.
     // If the key isn't mapped to a direction, return.
     val direction = getDirectionFor(key.code) ?: return
 
     // Prevent the snake from moving in opposite directions
     if (game.direction.isOpposite(direction)) return
-    game = Game(game.snakeParts, game.bricks, direction)
+    inputQueue.add(direction)
 }
 
 /**
@@ -90,29 +96,19 @@ fun onBrickTick() {
  */
 fun onSnakeTick() {
 
-    val snakes = ArrayList<Snake>()
+    // Get the queued input, or maintain the current direction if there's none
+    val directionInput = inputQueue.removeFirstOrNull() ?: game.direction
+    val nextHeadPosition = game.snakeParts.first().position.applyDirection(directionInput);
 
-    // If the snake is about to "snap its neck" with a bad move, ignore the last input
-    if (game.snakeParts[0].position.applyDirection(game.direction).exists(game.bricks)) {
-        game = Game(game.snakeParts, game.bricks, game.snakeParts[0].direction)
-    }
+    // If the snake is about to "snap its neck" with a bad move, ignore the last input.
+    val correctedInput = if (nextHeadPosition.exists(game.bricks)) game.snakeParts.first().direction else directionInput
+    game = Game(game.snakeParts, game.bricks, correctedInput)
 
-    // Iterates through all the snakes in the game and calculates their new position
-    for (snake in game.snakeParts.dropLast(1)) {
-        val position = snake.position.applyDirection(game.direction)
+    // If the next position contains a brick, stop the snake.
+    if (game.bricks.contains(nextHeadPosition)) return
 
-        // Collision logic: If the next position contains a brick, stop the snake.
-        if (game.bricks.contains(position)) return
-
-        snakes.add(Snake(snake.type, position, game.direction))
-    }
-
-    // Handles the tail by attaching it to the end of the snake, trailing by one unit.
-    val tailPosition = snakes.last.position.forceApplyDirection(game.direction.getOpposite())
-    snakes.add(Snake(SnakeType.TAIL, tailPosition, game.direction))
-
-    // Updates and draws the snake
-    game.updateSnake(snakes)
+    // Updates and draws the snake on screen
+    game.updateSnake(game.calculateSnakeMovement(directionInput, nextHeadPosition))
     game.drawSnake(game.snakeParts, arena)
 }
 
