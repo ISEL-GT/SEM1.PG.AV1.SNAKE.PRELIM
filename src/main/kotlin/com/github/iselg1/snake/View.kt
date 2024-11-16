@@ -35,7 +35,7 @@ fun Game.drawSnake(snakes: ArrayList<Snake>, arena: Canvas) {
     this.eraseSnake()
 
     for (snake in snakes) {
-        val sprite = snake.getSprite(this).getString()
+        val sprite = snake.getSprite().getString()
         arena.drawImage(sprite, snake.position.x, snake.position.y, SQUARE_DIMENSIONS, SQUARE_DIMENSIONS)
     }
 }
