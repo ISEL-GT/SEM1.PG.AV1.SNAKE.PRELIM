@@ -52,7 +52,7 @@ fun main() {
  */
 fun spawnSnake() {
 
-    // Create the snake head and add it to the manager
+    // Create the snake head and add it to the snake parts
     val centerHeight = BOARD_HEIGHT / 2
     val head = Snake(SnakeType.HEAD, Position(1, centerHeight), game.direction)
     val tail = Snake(SnakeType.TAIL, Position(0, centerHeight), game.direction)
