@@ -1,6 +1,7 @@
 package com.github.iselg1.snake
 
 import pt.isel.canvas.*
+import java.util.stream.IntStream.range
 
 // The global tick speed. The higher this is, the faster everything goes.
 const val GLOBAL_TICK_SPEED = 1
@@ -11,7 +12,8 @@ const val BRICK_TICK_SPEED = 5 * 1000
 
 // The width of the board measured in grid squares
 const val BOARD_WIDTH = 20
-const val BOARD_HEIGHT = 16
+const val
+        BOARD_HEIGHT = 16
 const val TOTAL_SQUARES = BOARD_HEIGHT * BOARD_WIDTH
 
 // The size in pixels of one of the square's sides
@@ -29,6 +31,7 @@ val inputQueue = ArrayDeque<Direction>()
  * Main entrypoint for the program, kick off the main logic flow and spawn the snake
  */
 fun main() {
+
 
     onStart {
 
@@ -50,9 +53,9 @@ fun main() {
 fun spawnSnake() {
 
     // Create the snake head and add it to the manager
-    val centerHeight = (BOARD_HEIGHT * SQUARE_DIMENSIONS) / 2
-    val head = Snake(SnakeType.HEAD, Position(1 * SQUARE_DIMENSIONS, centerHeight), game.direction)
-    val tail = Snake(SnakeType.TAIL, Position(0 * SQUARE_DIMENSIONS, centerHeight), game.direction)
+    val centerHeight = BOARD_HEIGHT / 2
+    val head = Snake(SnakeType.HEAD, Position(1, centerHeight), game.direction)
+    val tail = Snake(SnakeType.TAIL, Position(0, centerHeight), game.direction)
 
     game.snakeParts.add(head)
     game.snakeParts.add(tail)
@@ -72,7 +75,7 @@ fun onKeyPressed(key: KeyEvent) {
     val direction = getDirectionFor(key.code) ?: return
 
     // Prevent the snake from moving in opposite directions
-    if (game.direction.isOpposite(direction)) return
+    if (game.direction.isOpposite(direction) || inputQueue.getOrNull(0)?.isOpposite(direction) == true) return
     inputQueue.add(direction)
 }
 

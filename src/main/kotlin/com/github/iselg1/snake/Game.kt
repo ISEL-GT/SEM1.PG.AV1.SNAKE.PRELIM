@@ -59,7 +59,6 @@ fun Game.calculateSnakeMovement(direction: Direction, headPosition: Position) : 
         // Skip the head, that's handled differently, but we need it in the list to get its direction
         if (snake == this.snakeParts.first()) continue
         val lastDirection = this.snakeParts[index-1].direction
-
         snakes.add(Snake(snake.type, snake.position.applyDirection(lastDirection), lastDirection))
     }
 

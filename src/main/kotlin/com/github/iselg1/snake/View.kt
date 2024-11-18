@@ -14,7 +14,7 @@ const val SNAKE_SIZE = 64
 fun Game.drawBricks(arena: Canvas) {
 
     for (brick in this.bricks) {
-        arena.drawImage(BRICK_SPRITE, brick.x, brick.y, SQUARE_DIMENSIONS, SQUARE_DIMENSIONS)
+        arena.drawImage(BRICK_SPRITE, brick.x * SQUARE_DIMENSIONS, brick.y * SQUARE_DIMENSIONS, SQUARE_DIMENSIONS, SQUARE_DIMENSIONS)
     }
 }
 
@@ -36,7 +36,7 @@ fun Game.drawSnake(snakes: ArrayList<Snake>, arena: Canvas) {
 
     for (snake in snakes) {
         val sprite = snake.getSprite().getString()
-        arena.drawImage(sprite, snake.position.x, snake.position.y, SQUARE_DIMENSIONS, SQUARE_DIMENSIONS)
+        arena.drawImage(sprite, snake.position.x * SQUARE_DIMENSIONS, snake.position.y * SQUARE_DIMENSIONS, SQUARE_DIMENSIONS, SQUARE_DIMENSIONS)
     }
 }
 

@@ -101,23 +101,15 @@ fun Position.exists(positions: List<Position>): Boolean {
  */
 fun Position.applyDirection(direction: Direction, factor: Double = 1.0): Position {
 
-    val width = (BOARD_WIDTH - 2) * SQUARE_DIMENSIONS
-    val height = (BOARD_HEIGHT - 2) * SQUARE_DIMENSIONS
-
-    var x = 0
-    var y = 0
+    var y = this.y + (direction.y * factor).toInt()
+    var x = this.x + (direction.x * factor).toInt()
 
     when {
-        this.x > width -> x = 0  // The snake goes over the right side limit
-        this.x < 0 -> x = width // The snake exceeds the left side limit
-
-        this.y > height -> y = 0  // The snake goes over the bottom limit
-        this.y < 0 -> y = height // The snake goes over the upper limit
+        x >= BOARD_WIDTH -> x = 0  // Wraparound: right edge to left edge
+        x < 0 -> x = BOARD_WIDTH - 1  // Wraparound: left edge to right edge
+        y >= BOARD_HEIGHT -> y = 0  // Wraparound: bottom edge to top edge
+        y < 0 -> y = BOARD_HEIGHT - 1  // Wraparound: top edge to bottom edge
     }
-
-    // If none of the above match, these will, where everything is  ok :)
-    if (this.y in 0..height) y = this.y + (direction.y * SQUARE_DIMENSIONS * factor).toInt()
-    if (this.x in 0..width) x = this.x + (direction.x * SQUARE_DIMENSIONS * factor).toInt()
 
     return Position(x, y)
 }
@@ -130,8 +122,8 @@ fun Position.applyDirection(direction: Direction, factor: Double = 1.0): Positio
  */
 fun Position.forceApplyDirection(direction: Direction, factor: Double = 1.0): Position {
 
-    val x = this.x + (direction.x * SQUARE_DIMENSIONS * factor).toInt()
-    val y = this.y + (direction.y * SQUARE_DIMENSIONS * factor).toInt()
+    val x = this.x + (direction.x * factor).toInt()
+    val y = this.y + (direction.y * factor).toInt()
 
     return Position(x, y)
 }
@@ -146,7 +138,7 @@ fun randomPosition(): Position {
     val x = Random.nextInt(0, BOARD_WIDTH)
     val y = Random.nextInt(0, BOARD_HEIGHT)
 
-    return Position(x * SQUARE_DIMENSIONS, y * SQUARE_DIMENSIONS)
+    return Position(x, y)
 }
 
 /**
