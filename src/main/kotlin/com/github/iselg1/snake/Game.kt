@@ -54,17 +54,20 @@ fun Game.calculateSnakeMovement(direction: Direction, headPosition: Position) : 
 
     // Iterates through all the snake's parts, applying the direction of the previous part.
     // Ignores the tail, because that's handled differently
-    for ((index, snake) in this.snakeParts.dropLast(1).withIndex()) {
+    for ((index, snake) in this.snakeParts.withIndex()) {
 
         // Skip the head, that's handled differently, but we need it in the list to get its direction
         if (snake == this.snakeParts.first()) continue
-        val lastDirection = this.snakeParts[index-1].direction
-        snakes.add(Snake(snake.type, snake.position.applyDirection(lastDirection), lastDirection))
-    }
 
-    // Handles the tail by attaching it to the end of the snake, trailing by one unit.
-    val tailPosition = snakes.last().position.forceApplyDirection(direction.getOpposite())
-    snakes.add(Snake(SnakeType.TAIL, tailPosition, snakes.last().direction))
+        // Handles the tail by setting it as the previous last position with the new orientation
+        if (snake == this.snakeParts.last()) {
+            snakes.add(Snake(snake.type, this.snakeParts.dropLast(1).last().position, snakes.last().direction))
+            continue
+        }
+
+        val lastSnake = this.snakeParts[index-1]
+        snakes.add(Snake(snake.type, lastSnake.position, lastSnake.direction))
+    }
 
     return snakes
 }
